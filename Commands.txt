@@ -1,0 +1,701 @@
+General:
+
+/etc/httpd/conf/httpd.conf -> Change the value of 'Listen' from '80' to desired port if we want to change the port of httpd service
+scp -i ~/Virginia.pem centos@35.172.182.214:/etc/httpd/conf/httpd.conf . -> copies httpd.conf file from server 35.172.182.214 to current path in current server
+/etc/selinux/config -> To check selinux status
+Java application hosting -> java code - mvn package - war file - placed in tomcat
+Angular application hosting -> angular code ng build - distribution - place in apache httpd/nginx
+
+
+
+To install nginx(A webserver like httpd):
+create file /etc/yum.repos.d/nginx.repo and add the data from nginx documentation, change release version in it
+-----
+[nginx]
+name=nginx repo
+baseurl=https://nginx.org/packages/centos/$releasever/$basearch/
+gpgcheck=0
+enabled=1
+-----
+sudo yum -y install nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+/usr/share/nginx/html/ -> document path for nginx
+
+
+
+To install AWS CLI on Linux:
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+
+
+Node app(We need nodejs, angular, npm, ng to setup Node/Angular apps):
+create a directory where we can store all the code related to node
+In the directory, create two files package.json(contains dependencies for the application info of the package, similar to pom.xml file), server.js and get the content from nodejs.org website
+curl -fsSL https://rpm.nodesource.com/setup_lts.x | sudo bash - -> To download repository/setup files
+sudo yum install -y nodejs -> To install node and npm
+npm install -> downloads dependencies for node js
+npm start -> starts node js
+
+
+
+Angular app(We need nodejs, angular, npm, ng to setup Node/Angular apps):
+Goto Nodejs website for installation
+Installing Node.js via package manager
+Select the type of OS
+Go to the github link(NodeSource) in the page
+select Enterprise Linux based distributions (rpm)
+Prefer with LTS version
+curl -fsSL https://rpm.nodesource.com/setup_lts.x | sudo bash - -> To download repository/setup files
+sudo yum -y install nodejs -> Installs Nodejs and npm
+ng installation:
+sudo npm install -g @angular/cli -> Installs ng
+npm install -> downloads dependencies for node js/project to run the application
+ng build -> To build angular project and creates a target directory(dist)(to create target directory), run this inside the package and it gives output as distribution
+sudo yum -y install httpd(Also add port 80 as inbound rule on the server)
+sudo systemctl start httpd
+sudo systemctl enable httpd
+sudo mv angularCalc /var/www/html/ -> copy the dist/built code into the  webserver location
+sudo vi /etc/httpd/conf/httpd.conf -> change DocumentRoot(add /app in DocumentRoot path)
+sudo setenforce 0 -> Do this if any configuration is changed
+sudo systemctl restart -> restart once any config changes are made
+
+
+
+To host multiple web applications on a single instance, use virtual hosting:
+Add the below code to /etc/httpd/conf/httpd.conf and add second port in 'Listen' section
+
+# Ensure that Apache listens on port 80
+Listen 80
+<VirtualHost *:80>
+    DocumentRoot "/www/example1"
+    ServerName www.example.com
+
+    # Other directives here
+</VirtualHost>
+
+<VirtualHost *:80>
+    DocumentRoot "/www/example2"
+    ServerName www.example.org
+
+    # Other directives here
+</VirtualHost>
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+rm -r dirname/foldername -> removes a folder and its contents
+rm -f dirname/foldername -> removes readonly file without asking
+rm -rf dirname/foldername -> force deletion of everything in a directory
+mkdir -p dir1/dir2/dir3 -> creates directoty dir3 in dir2 in dir1 even if dir1 doesn't exist
+ls -l -> Displays all the things in list view
+ls -l -t -> Displays all file in list view(-l), sorts with time(-t)
+ls -l -t -r -> Displays all file in list view(-l), sorts with time(-t) and in reverse order(-r)
+ls -ltr -> Displays all file in list view(-l), sorts with time(-t) and in reverse order(-r) -> same as ls -l -t -r, but uses -l -t -r in one shot
+ctrl+D -> Exit from a server
+ctrl+L -> Clear screen
+ls -la -> Displays all the hidden files
+ls -lh -> h is for human readable format of size
+touch filename on existing filename -> Updates the timestamp of existing file without changing content of that file
+ls -ltr /var/www/html/ -> List all the file according to created time in reverse order in /var/www/html/ directory
+To exit from any opened file, use 'q'
+cat,head,tail,more,less -> Text editor tools
+man commandname -> shows manual of that command
+more command works only on linux
+cp dir1/dir2/dir3/abc.txt . -> . helps you to copy file abc.txt from dir1/dir2/dir3 to current path
+sh abc.sh -> Executes the abc script
+Shift + Z Z -> save and exit a opened file in editor
+
+vim -> command mode, insertion mode
+:w for save
+:q for quitting
+:q! - Quit by discarding changes
+:wq to save and quit
+:se nu -> sets line numbers in command mode
+gg -> place cursor at top line of the page
+G > Place cursor at bottom line of the page
+shift$ -> place cursor at end of a line
+shift^ -> place cursor at beginning of line
+w -> places cursor after a word
+Nw -> places cursor after N words
+b -> places cursor a word before
+Nb -> places cursor at N words before
+:%s/centos/ec2-user -> searches for centos and replaces it with ec2-user in a file after getting out of insert mode
+2u -> undo the changes in command mode
+ctrl+u -> page up
+ctrl+d -> page down
+dd -> deletes entire row
+Ndd -> deletes N lines from the pointer location
+yy -> copy a line
+Nyy -> copy N lines
+p -> paste
+u -> undo
+/pattern -> searches for that pattern in the file
+
+ps -ef -> Gives all running process on a machine
+
+wc -> lines, words count
+wc file1.txt -> gives counts of that file
+
+head file1 -> top 10 lines of a file
+head -N file1 -> gives top 5 lines of a file
+
+top works opposite of head
+
+echo hi > file1.txt -> prints 'hi' to a new file file1.txt
+
+echo hello >> file1.txt -> adds new content to file1.txt
+
+date -> prints date
+
+cal -> prints current month calendar
+cal 2021 -> prints 2021 calendar
+
+softlink:
+ln -s path/file1.txt path/newfile.txt -> creates dummy file of file1 in destination path
+If we edit dummy file, it will make changes in original file, but if we delete dummy file, the original file persists.
+If we delete original file, dummy file will go into blackhole state and data in dummy file gets erased. If we add anything in to that backup file, then automatcially original file file1.txt gets created with new content in it.
+
+hardlink:
+ln path/file1 path/newfile.txt -> works same as softlink, but if we delete original file, the dummy file and data in it  will still exist
+
+grep pattern filename -> searches for that pattern in that file
+
+grep abc file1.txt | wc -l
+gives counts of word abc in file1.txt
+
+grep -r abc /directory -> If we want to search abc in all the folders of a directory, then use -r(recursive search)
+
+find / -name file1.txt -> searches for file1.txt in directory / and all sub directories
+find / -size +10M -> searches for files with more than 10M size in / directory
+find / -mtime -+10 -> gives all files which are modified in/before 10 minutes
+find /home -name abc.txt -> searches for abc.txt in home directory
+
+free -h -> Gives RAM details
+free -m -> RAM details in MB
+
+cat /proc/cpuinfo -> CPU details
+
+touch file{1..5}.txt -> creates 5 files file1.txt, file2.txt. file3.txt, file4.txt, file5.txt
+
+cd - -> last working location
+
+cd ~ -> home directory
+
+tar	is an inbuilt utility for archiving
+tar cvf myfiles.tar file1.txt file2.txt dir1 dir2 -> create an archive
+tar xvf myfiles.tar -> extract from an archive
+zip and unzip are for archiving and extracting, we need to install them and syntax is same as tar
+
+sudo yum -y install <app-name> -> for installing an application
+sudo apt -y install apache2 -> for installing application on ubuntu machine
+
+sudo su - root -> switching to root user, su is 'switch user'
+
+id <username> -> to check if any particular user is present
+/etc/passwd -> file which contains all the users list present on that server
+
+visudo -> used to change users permissions
+
+sudo useradd username -> creates a user
+
+/etc/selinux/config
+getenforce
+sudo setenforce permissive
+
+sudo passwd username -> set a password for user
+
+su - username -> switching to a particulr user
+
+sudo usermod -aG wheel username -> grants sudo access to a particular user in centos('sudo' in amazon linux)(aG is 'Adding Group')(Recommended)
+sudo vi /etc/sudoers
+
+sudo usermod -l newname oldname -> changes username
+
+sudo userdel username -> deletes a user
+sudo userdel --remove username -> Removes user and deletes directory also from home
+
+/etc/group -> Contains list of all the groups present
+
+sudo groupadd groupname -> creates a group
+
+sudo netstat -ntpl | grep 22 -> to check if the port is in working or not
+sudo netstat -ntpl -> shows all the listening ports
+
+d -> directory
+- -> file
+l -> softlink file
+
+rwxr--rw- -> The first three letters(rwx) says Owner of that file/dir has read, write and execute permissions, second three letters(r--) says users in group have only read permission on that file/dir and third three letters(rw-) says all the other users have read and write permissions on that file/dir.
+
+chmod 0+w file1.txt -> Gives write permission to Owner for file1.txt
+chmod 0-w file1.txt -> Revokes write permission from Owner
+chmod ogu+w file1.txt -> Gives write permission to Owner, Group and Other users
+sudo chown test:test file1.txt -> changes owner of that file
+sudo -R 777 dir1/ -> Gives Read, write, execute for all
+
+rpm deals with .rpm files
+rpm -qa -> Displays list of applications installed on that server
+rpm -qa | grep appname -> Shows whether the application is installed on that server
+rpm rpm -ivh installable_file -> installs an application(i-Install, v-verbose(Gives details output), h-hash(prints in hash mode like percentage done))
+
+
+yum list installed "httpd*" -> List the installed Apache packages.
+yum remove "httpd*" -y -> Remove the installed httpd packages
+userdel -r apache -> delete the Apache user
+
+
+yum deals with .repos.d files
+yum list installed -> Displays list of applications installed on that server
+yum -> advanced version of rpm, installs dependencies automatically
+sudo yum -y install git -> installs git
+sudo yum -y remove git -> uninstalls git
+sudo yum -y update git -> updates git
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+GIT - 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
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+git config --global user.name Risheendra
+git config --global user.email rishindra.bompally@gmail.com
+git config --global color.ui true
+git config --global alias.co checkout -> This command helps to create an alias for checkout. Now we have givn 'co' as alias for checkout, so 'co' can be used instead of checkout in git console(EX: git co master) We can use alias command for many other git commands
+git config -l
+git init repository-name
+git status
+git add filename
+git commit -m "Commit message"
+git log('z' or 'q' will help to exit from git log)
+git show commitID
+git commit -m "new commit" filename
+git branch/git branch --list -> lists all the branches
+git branch branchname -> Creates a branch
+git branch -d branchname -> Safe delete of branch(prevents from deleting if there are unmerged changes)
+git branch -D branchname -> Force delete of branch(deletes a branch even if there are unmerged changes)
+git branch -m branchname -> renames the current branch
+git checkout branchname
+git log --oneline
+git merge branchname
+git checkout commitID
+git checkout -b branchname
+git checkout -- filename -> To discard changes from working directory
+git commit --amend -m "message"
+git reset HEAD filename -> removes file from staging directory
+git revert commitID -> removes the file from local directory
+git remote add origin url -> attaches localrepo to remoterepo
+git remote remove origin -> removes origin added in GitBash
+git push -u origin branchname -> pushes branch to remoterepo
+git push --all
+git pull -> used to update localrepo if there are any changes in remoterepo
+git clone -b branchname github-link ->
+git diff start_commit_id..end_commit_id -> Gives differences betweend two commits
+git stash -> temporarily moves changes from git if we don't want to commit and review tham later(To revisit those changes, use 'git stash pop' and to delete them user 'git stash drop')
+ssh -keygen
+
+
+If we delete the new branches after making changes to the file, merging to master and committing, the modified date will still exist if we check in master
+If there is an uncommitted file in one branch and we have created a new branch from the current branch, the uncommitted file will be cloned to new branch and if we remoe the file from first branch, it will be automatically removed from new branch
+
+**********************************************************************************************************************************************************
+
+error: src refspec main does not match any
+error: failed to push some refs to 'https://github.com/risheendrabompally/Ansible_Playbooks.git'
+
+git branch -M main
+git push -u origin main
+
+**********************************************************************************************************************************************************
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Maven
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+sudo yum -y install maven
+
+mvn package
+mvn clean
+mvn compile
+mvn test
+mvn deploy
+
+While executing the code, run the command 'java -cp target/my-app-1.0-SNAPSHOT.jar com.mycompany.app.App' in same path as pom.xml
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+SonarQube(For continuous code inspection)(admin admin)
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-6.7.7.zip
+unzip sonarqube-6.7.7.zip
+sonarqube-6.7.7/bin/linux-x86-64/sonar.sh status
+sonarqube-6.7.7/bin/linux-x86-64/sonar.sh start
+mvn sonar:sonar \
+  -Dsonar.host.url=http://35.172.215.148:9000 \
+  -Dsonar.login=925601fa847acf102ef75fc7edaefb9bfdc5b227 -> Run this on the build server
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Nexus
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+wget https://download.sonatype.com/nexus/oss/nexus-2.14.18-01-bundle.tar.gz
+tar xvf nexus-2.14.18-01-bundle.tar.gz
+nexus-2.14.18-01/bin/nexus status
+nexus-2.14.18-01/bin/nexus start
+sudo vi pom.xml -> <project>add nexus server details</project> -> Add the details in pom.xml file from Build server
+sudo vi /usr/share/maven/conf/settings.xml - Add nexus login creds in Build server
+mvn package
+mvn deploy
+
+**********************************************************************************************************************************************************
+
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy (default-deploy) on project RaviCalculator: Failed to deploy artifacts: Could not transfer artifact com.ravi.cal:RaviCalculator:jar:0.1.4 from/to releases (http://13.234.20.225:8081/nexus/content/repositories/releases): Failed to transfer file: http://13.234.20.225:8081/nexus/content/repositories/releases/com/ravi/cal/RaviCalculator/0.1.4/RaviCalculator-0.1.4.jar. Return code is: 400, ReasonPhrase: Bad Request. -> [Help 1]
+
+------ We will get this error if we deploy the project that is already present on Nexus
+
+**********************************************************************************************************************************************************
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Tomcat
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.94/bin/apache-tomcat-7.0.94.tar.gz
+tar xvf apache-tomcat-7.0.94.tar.gz
+vi apache-tomcat-7.0.94/conf/tomcat-users.xml
+<user username="tomcat" password="tomcat" roles="manager-gui"/>
+<user username="deploy" password="deploy" roles="manager-script"/>
+add in <tomcat-users></tomcat-users>
+apache-tomcat-7.0.94/bin/startup.sh start
+paste the application link from nexus in /apache-tomcat-7.0.94/webapps using the command -> wget --user admin --password admin123 url
+
+
+To change default port:
+apache-tomcat-7.0.94/conf/server.xml
+<connector-port></connector-port>
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Jenkins(1ca6b605755f44c6865786a3b914db8e)
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Install java
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+sudo yum -y install epel-release
+sudo yum -y install jenkins
+sudo systemctl status jenkins
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
+
+
+For angular app:
+sudo yum install -y nodejs
+sudo npm install -g @angular/cli
+npm install
+ng build
+
+
+**********************************************************************************************************************************************************
+
+ERROR: cannot verify pkg.jenkins.io's certificate, issued by ‘/C=US/O=Let's Encrypt/CN=R3’:
+  Issued certificate has expired.
+To connect to pkg.jenkins.io insecurely, use `--no-check-certificate'.
+
+sudo yum install -y ca-certificates -----> This will resolve the above issue
+
+**********************************************************************************************************************************************************
+
+For Redhat based 'centos' like distributions(not required for Amazon Linux)
+
+Error: Package: jenkins-2.319.1-1.1.noarch (jenkins)
+           Requires: daemonize
+You could try using --skip-broken to work around the problem
+You could try running: rpm -Va --nofiles --nodigest
+
+sudo yum -y install epel-release
+
+**********************************************************************************************************************************************************
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Ansible
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+To work on any slave/worker nodes from master, the slave server should be up and running
+
+sudo yum -y install epel-release(Extra packages for enterprise linux) - For centos instances
+sudo amazon-linux-extras install epel - Fpr AmazonLinux instances
+sudo yum -y install ansible
+add worker nodes IPs in /etc/ansible/hosts
+ansible --list-hosts all/groupname -> Shows all/group hosts configured
+
+add creds in this file as below
+n1 ansible_host=192.168.0.178 ansible_user=centos ansible_ssh_private_key_file=/home/centos/Virginia.pem
+n2 ansible_host=192.168.0.36 ansible_user=centos ansible_ssh_private_key_file=/home/centos/Virginia.pem
+
+ansible all -m ping -> To check the connectivity to the servers
+
+ansible [pattern] -m [module] -a "[module options]"
+
+-b can be attached in the end of command to perform that particular command as a sudo user
+
+ansible-playbook playbook-name -> Executes a playbook
+
+add --limit nodename/groupname in the end of command to limit the execution of the command to particular node or group
+
+we can add user defines variables by adding 'vars' after 'become' in the yaml file
+
+We can also give dynamic values to a user defined variable by adding -e and variable name, value in the while running playbook command
+Ex: ansible-playbook abc.yaml -e variablename=value
+
+ansible-galaxy init role-name -> creates a role
+
+
+**********************************************************************************************************************************************************
+
+An exception occurred during task execution. To see the full traceback, use -vvv. The error was: If you are using a module and expect the file to exist on the remote, see the remote_src option
+fatal: [n3]: FAILED! => {"changed": false, "msg": "Could not find or access '/home/ec2-user/ecomm' on the Ansible Controller.\nIf you are using a module and expect the file to exist on the remote, see the remote_src option"}
+
+If you are copying any file which is present on remote server to another path on remote server using ansible playbook, use 'remote_src: yes' in the copy module step. If this is not added, then the ansible will search for the folder/file on master node as you are running the playbook from master node.
+
+**********************************************************************************************************************************************************
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Docker
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Installation:
+Docker installation: https://get.docker.com/
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+sudo systemctl enable docker
+sudo systemctl start docker
+
+
+docker image ls -> Gives list of all the images present
+
+sudo usermod -aG docker centos -> adds centos user to docker group(need to logout and connect back to get this into effect)
+sudo grep docker /etc/group -> to verify whether added
+
+docker container ls -> Lists the running containers on docker
+
+docker container ls -a -> Lists all the containers on docker
+
+docker search centos -> searches for centos image on docker hub
+
+docker container run centos -> gets centos image and creates a container
+
+docker container run -dt centos -> creates the container in detached(back ground) mode(we can also use -it to run the container for temporary purpose, in this mode we can go inside the container)
+
+docker container start c1 -> starts c1 container
+docker container stop c1 -> stops c1 container
+docker restart container-id -> Restarts the container
+
+docker image rm imagename -> removes container form cache
+
+docker exec container-ID/container-name command -> Runs the command on the container
+docker exec container-ID/container-name uname -> Gives the OS of docker container
+docker exec container-ID/container-name ps -ef -> Gives process running on that container
+
+docker container rm container-ID/container-name -> removes container
+docker container rm -f container-ID/container-name -> removes container forcefully even if it is running or we can stop the container and use above rm command
+
+docker container run -dt --name c1 centos -> creates a container named c1 with centos image
+
+docker container logs containerID -> gives logs of the container
+
+Docker Volumes:
+Anonymous:
+docker container run -dt --name c2 -v /app centos -> creates a docker container named c2 with centos image and a volume so data in /app directory is mapped to the volume created
+Named:
+docker container run -dt --name w1 -v webstorage:/app centos -> creates a docker container named w1 with centos image and a volume 'webstorage' so data in /app directory is mapped to the volume 'webstorage'
+Host:
+docker container run -dt --name h1 -v /home/centos/test:/app centos -> creates a docker container named h1 with centos image and attaches /test folder in /home/centos/ path as a volume to the /app folder of container h1
+
+docker container/volume inspect container-ID/container-name/Volume-ID -> gives details of container/volume
+
+docker volume prune -f -> removes all unused volumes
+
+
+docker container run -dt --name web2 -p 9099:80 httpd -> creates a container 'web2' with httpd image and allows traffic of port 9099 from host to the container through port 80
+
+docker exec -it web2 bash -> to login to the container 'web2' interactively(-it -> interactively, bash -> shell)
+
+docker container run -dt --name ecomm-httpd -v /home/centos/ecomm/:/usr/local/apache2/htdocs/ -p 80:80 httpd -> creates a container 'ecomm-httpd' creates volume and links /home/centos/ecomm/ of the host machine with /usr/local/apache2/htdocs/ of the container and does port forwarding from the 80 port of the host to 80 port of the container with httpd docker image
+
+docker tag Existing Image name/ID repname/imagename -> If you wamt to change an existing image name
+
+docker export containerID/name > filename.tar -> This exports the file syatem of a container into tar file
+docker export -o='filename.tar' containerID/name -> This exports the file syatem of a container into tar file
+docker export -o filename.tar containerID/name -> This exports the file syatem of a container into tar file
+
+
+
+Creating custom docker image:
+create a file 'Dockerfile' in the path where the code is present and add 'FROM'(Source image) and 'COPY'(path where code is present and document path where code needs to be placed) in the file
+-----
+Ex:
+FROM httpd
+COPY . /usr/local/apache2/htdocs/
+-----
+docker build -t username/rep-name .('t' for tag) -> Run this from the place where 'Dockerfile' is present(here it is .)(docker build -t rishindra06/nodeapp-lts .-> for rebuilding the application)(docker build -t app:v2 -> : helps to identify the tag after name, here 'app' is name and 'v2' is tag)
+To push the custom image into docker account:
+docker login -> Give credentials
+docker image push username/rep-name
+
+
+Angular Docker Image:
+get the code from git
+go to the code path
+Create a 'Dockerfile' and add all the required setup in the file
+
+
+Docker-Compose Installation:
+Install Docker
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+Run docker compose commands only in the directory which contains compose file
+
+docker-compose up -d -> To run docker services(Docker containers) in detached mode
+
+docker-compose ps -> Displays currently running process in the current project
+
+docker-compose stop svc1 -> Stops a current running service 'svc1' defined in the file
+
+docker-compose start svc1 -> Start a service 'svc1' defined in the file
+
+docker-compose down -> Kills all the running services defined in the project
+
+
+FROM, WORKDIR, RUN, COPY, EXPOSE, CMD
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Kubernetes
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Kubernetes Objects == Ansible Modules
+Kubernetes Imperative == Ansible Ad-Hoc
+Kubernetes Declarative == Ansible Playbooks
+
+Kubernetes POD is a running instance of the application
+
+3 main components:
+	1. K8S Workstation
+	2. K8S Master
+	3. K8S Worker
+
+Any machine which has AWS CLI, KUBECTL, KOPS(or EKS etc) will become K8S Workstation
+KOPS(Kubernetes Operations) -> Helps to create cluster. Master, Worker will be coming from this
+KUBECTL(Kubernetes Command Line Tool) -> Allows to run the commands on cluster, manage cluster
+AWS CLI -> To create resources on AWS and to give workstation authorisation AWS account
+
+K8S Master have 4 components
+	1. API server(Responsible for receiving the requests from workstation and takes care of the working of all other components(ETCD, CONTROLLER, SCHEDULER))
+	2. ETCD(Key-Value storage which stores cluster state and details)
+	3. CONTROLLER(Monitors the cluster, watch state of the cluster and make changes if needed. Two types: 1. Node controller(Takes care of nodes) 2. Replication controller(Takes care of desired no. of pods running in a cluster))
+	4. SCHEDULER(Runs a set of functions to score the feasible Nodes and picks a Node with the highest score among the feasible ones to run the Pod)
+	
+kubectl apply -f ecomm.yml -> We will run this command on K8S workstation which then runs ecomm.yml object on k8S Master on API server
+
+
+K8S Worker have 3 components
+
+	1. Docker runtime(Helps in running the Pods)
+	2. KUBELET(An agent preinstalled in all worker nodes after setting up the cluster which hits API server for every 15 seconds, receives the request from API server, executes it and give status back to Master)(Also called as principle agent in K8S ecosystem)
+	3. KUBE PROXY(Manages N/W inside worker nodes, routes traffic to the appropriate container based on IP and port number of the incoming request)
+	
+Objects in K8S:
+Pod: A pod is a wrapper on container which has some specifications to be defined like image, port etc
+Replica Set: Takes care of Pods and makes sure to maintain defined no. of replicas running at any time
+Deployment: This takes care of updates and rollbacks for pods and replica sets
+Service: This takes care of access to outside world, routes customer requests to the pod using the DNS
+
+Service > Deployment > Replica set > Pods > Specification
+
+
+Configuring K8S Workstation:
+1. Install AWS CLI
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+aws configure
+
+2. Install kubectl
+sudo vi /etc/yum.repos.d/kubernetes.repo
+
+#add this data in the file
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
+sudo yum install -y kubectl
+
+3.Install kops
+curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+chmod +x kops-linux-amd64
+sudo mv kops-linux-amd64 /usr/local/bin/kops
+
+
+Create a cluster:
+
+After following the above steps, follow the below steps
+
+1.create a s3 bucket
+
+2.export KOPS_STATE_STORE=s3://k8sclusterlab -> This helps to configure the workstation machine to store the state of cluster to be uploaded to this bucket
+
+3.ssh-keygen -> To connect to cluster for administration purpose, we need to generate keys using this command(similar to pem keys but used to connect to j8s cluster)
+
+4.kops create cluster --yes --state=s3://k8sclusterlab --zones=us-east-1a,us-east-1b --node-count=2 --name=test.k8s.local -> creates a cluster 'test'(k8s.local should be added to the cluster name if we don't have a domain name, if we have domain name then no need of mentioning it) with count of two worker nodes spread across two availability zones and stores the cluster state in k8sclusterlab s3 bucket
+
+5.kops delete cluster test.k8s.local --yes -> destroys test.k8s.local cluster
+
+
+
+export KOPS_STATE_STORE=s3://k8sclusterlab -> If you get disconected after creating cluster, then run this command to get the state of cluster from s3 and then perform the action you are going to do. Else it will not be able to take any action on the cluster
+
+kops get clusters -> used to get list of clusters
+kubectl get nodes
+kops validate cluster -> validates cluster, shows cluster status
+kubectl get all -> to view the resources
+kubectl logs <pod-name> -> Gives logs of the pod
+
+
+kubectl run p1 --image httpd -> creates a pod 'p1'
+kubectl describe pod p1 -> Gives details of 'p1' pod(similar to docker inspect command)
+kubectl delete pod p1 -> deletes pod 'p1'
+kubectl create deployment web --image=httpd -> creates a deployment called 'web' which automatically creates a replica set which then creates a pod
+kubectl scale --replicas=2 deployment web -> This scales the replicas of the deployment called 'web' to '2'
+kubectl expose deployment.apps/web --port 80 --name web-svc --type LoadBalancer -> Creates service 'web-svc' and a loadbalancer for the 'web' deployment on the port 80
+kubectl apply -f deploy.yml
+kubectl apply -f service.yml
+
+
+
+
+srinath challa
+
+
+How GitHub looks like in real time ( how files look like ) is the same GitHub.com will be used?
+Info about private repository username and password?
+How many servers we use in real time and why??
+Jenkins Master slave node in real time?
+What IDE developers use in your GitHub?
+What key we use to connect our Jenkins server to ansible, docker and Kubernetes server 
+How many servers we use to set up all DevOps tools?
+What all OS we use??
+
+
+In real time
+What instances we use like t2.medium
+How about black box testing before deployment?
+Domain name instead of IP address
+Naming convention of the production server?
+Jenkins nodes
+What is release in GitHub
+From which branch we fetch the code to build
+Validation in Github
+Pre commit hook
+Post commit hook
+What are snapshots in Jenkins (sonarqube)
+Release verses snapshot in maven
+How do u set up regression test cases in pipeline
+How do we deploy kubernetes containers to different test environments?

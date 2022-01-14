@@ -1,0 +1,53 @@
+Can we place webserver and DB in one subnet? - Yes, but may not work as required
+If by default, we get dynamic public IPs, everytime it will get updated in Internet gateway, WWW? - No
+Do we need internet gateway for communication between diff. VPC inside AWS, and public IPs are required for that? - (VPC Peering)
+Subnet is grouping of components just to make routing easy
+We cannot launch resources direct in VPC without using subnet
+Changing netmask of subnet/vpc in future is not possible once it is defined
+Route tables are implicitly created and gets attached to subnets if they are not attached to any other route tables
+we can attach one IG to only one VPC
+We can attach one security group to diff. servers
+EC2 is IAAS
+authentication is credentials and authorisation is permission or access
+A volume is always locked within AZ
+Console access - For Humans, Programmatic access - For components mostly, can be given for humans also
+sudo yum list installed/sudo rpm -qa --- To check installed softwares on Linux
+We can create multiple Resources of same type using one YAML/JSON file in CloudFormation
+~/.aws/credentials - Hidden file
+
+https://www.site24x7.com/
+
+"-i" flag is identity_file and is used to identify a private key(for authentication) to connect to destination server
+
+
+Commands:
+
+Uninstall a build using Maven
+mvn clean - use the command from the path where target is present
+
+mounting EFS:
+sudo mkfs -t ext4 /dev/xvdf	-	Required only for the first time
+sudo mkdir /mydisk
+sudo mount /dev/xvdf /mydisk/
+
+ap-south-1
+ap-south-1a
+ap-south-1b
+aws cloudformation deploy --template-file /c/Users/risheendra/Downloads/CST.yaml --stack-name CST-VPC
+
+us-east-1
+us-east-1a
+us-east-1b
+aws cloudformation deploy --template-file /c/Users/risheendra/Downloads/CG.yaml --stack-name CG-VPC
+
+Copy a file from local to Ec2 instance using SCP:
+scp -i Virginia.pem filename ec2-user@3.89.129.147:/home/ec2-user/
+
+Delete a stack:
+aws cloudformation delete-stack --stack-name IBM-VPC
+
+Upload a file from local to S3 Bucket:
+aws s3 cp CST.yaml s3://peering1406/CST.yaml
+
+Updating a stack:
+aws cloudformation update-stack --stack-name CST-VPC --template-url https://peering1406.s3.ap-south-1.amazonaws.com/CST.yaml

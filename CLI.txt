@@ -1,0 +1,13 @@
+aws ec2 create-vpc --cidr-block 10.0.0.0/16
+aws ec2 create-tags --resources vpc-085c005690602db73 --tags Key=Name,Value=CLI
+aws ec2 create-internet-gateway
+aws ec2 create-tags --resources igw-04c3fb205a2d23c45 --tags Key=Name,Value=CLI-IGW
+aws ec2 attach-internet-gateway --internet-gateway-id igw-04c3fb205a2d23c45 --vpc-id vpc-085c005690602db73
+aws ec2 create-subnet --vpc-id vpc-085c005690602db73 --cidr-block 10.0.0.0/24
+aws ec2 create-tags --resources subnet-01227fccfa668454c --tags Key=Name,Value=Subnet1
+aws ec2 create-route-table --vpc-id vpc-085c005690602db73
+aws ec2 create-tags --resources rtb-070daf9f25a99b79a --tags Key=Name,Value=WebRT
+aws ec2 associate-route-table --route-table-id rtb-070daf9f25a99b79a --subnet-id subnet-01227fccfa668454c
+aws ec2 create-route --route-table-id rtb-070daf9f25a99b79a --destination-cidr-block 0.0.0.0/0 --gateway-id igw-04c3fb205a2d23c45
+aws ec2 modify-subnet-attribute --subnet-id subnet-01227fccfa668454c --map-public-ip-on-launch
+aws ec2 run-instances --image-id ami-063d4ab14480ac177 --count 1 --instance-type t2.micro --key-name Risheendra.pem --security-group-ids sg-06452562e947fcdb7 --subnet-id subnet-01227fccfa668454c --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=CST-Server}]'

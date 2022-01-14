@@ -1,0 +1,58 @@
+Availability Zone
+Region
+VPC
+CIDR
+Subnet
+Security Group
+NACL
+Route Tables
+Internet Gateway
+NAT Gateway
+Bastion Host
+Elastic IP
+VPC Peering
+EC2 Instances
+Instance Types
+EBS, types
+EFS
+AMI
+Copy AMI
+Elastic IP
+Snapshots
+Key pairs
+Metadata
+Userdata
+IAM
+Roles
+Users
+Groups
+Policies
+S3
+S3 Storage classes
+Buckets
+Versioning
+Lifecycle policy
+Cross region replication
+Web hosting
+Bucket Policy
+ACL 
+Object locking
+AWS CLI
+Cloudformation
+Stack
+Terraform
+RDS
+Types of Databases in RDS
+Dynamo DB
+Cloudwatch
+SNS
+Auto scaling
+launch configuration
+Load balancer
+Alarms
+Fault Tolerance
+Route 53
+
+Cloud Trial
+AWS Lambda
+Snowball

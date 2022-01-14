@@ -1,0 +1,36 @@
+While logging into DB from server, give the credentials which you used when creating DB
+Use the same creds which you used when creating DB in the db.php file
+We need to add public subnets to an ELB even if instances are in private subnets.Add atleast one public subnet to ELB to route users requests in to that AZ. And we need to add public/private subnets of an availability zones to which that instances belong to.
+Add 80 port Inbound from 0.0.0.0/0 to ELB security group
+Add all public subnets of same availability zone in php app
+We can use custom docker images on any machine where docker is present
+Docker import and export is an alternative way of storing images in docker hub. We can manually export the image from current docker machine and import it in the new docker machine.
+Run docker compose commands only in the directory which contains compose files
+.gitignore/.dockerigore file is used to add the files which can be ingored while building the application so that the build becomes lighter
+No command for forking
+export KOPS_STATE_STORE=s3://k8sclusterlab -> run this command if you got disconnected between creating the cluster and destroying it
+
+LTS -> Long Term Support
+
+[centos@ip-192-168-0-178 ~]$ systemctl status httpd.service
+● httpd.service - The Apache HTTP Server
+   Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled; vendor preset: disabled)
+   Active: failed (Result: exit-code) since Tue 2021-08-24 13:46:51 UTC; 24s ago
+     Docs: man:httpd(8)
+           man:apachectl(8)
+  Process: 1140 ExecStop=/bin/kill -WINCH ${MAINPID} (code=exited, status=1/FAILURE)
+  Process: 1139 ExecStart=/usr/sbin/httpd $OPTIONS -DFOREGROUND (code=exited, status=1/FAILURE)
+ Main PID: 1139 (code=exited, status=1/FAILURE)
+
+Aug 24 13:46:51 ip-192-168-0-178.ec2.internal httpd[1139]: (13)Permission denied: AH00072: make_sock: could not bind to address [::]:8090
+Aug 24 13:46:51 ip-192-168-0-178.ec2.internal httpd[1139]: (13)Permission denied: AH00072: make_sock: could not bind to address 0.0.0.0:8090
+Aug 24 13:46:51 ip-192-168-0-178.ec2.internal httpd[1139]: no listening sockets available, shutting down
+Aug 24 13:46:51 ip-192-168-0-178.ec2.internal httpd[1139]: AH00015: Unable to open logs
+Aug 24 13:46:51 ip-192-168-0-178.ec2.internal systemd[1]: httpd.service: main process exited, code=exited, status=1/FAILURE
+Aug 24 13:46:51 ip-192-168-0-178.ec2.internal kill[1140]: kill: cannot find process ""
+Aug 24 13:46:51 ip-192-168-0-178.ec2.internal systemd[1]: httpd.service: control process exited, code=exited status=1
+Aug 24 13:46:51 ip-192-168-0-178.ec2.internal systemd[1]: Failed to start The Apache HTTP Server.
+Aug 24 13:46:51 ip-192-168-0-178.ec2.internal systemd[1]: Unit httpd.service entered failed state.
+Aug 24 13:46:51 ip-192-168-0-178.ec2.internal systemd[1]: httpd.service failed.
+
+set selinux as permissive if any config level changes are made(only for centos and redhat, it is not present in amazon linux)

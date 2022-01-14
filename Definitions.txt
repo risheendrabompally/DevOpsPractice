@@ -1,0 +1,15 @@
+Servlet: Servlets are Java classes which service HTTP requests and implement the javax.servlet.Servlet interface. Web application developers typically write servlets that extend javax.servlet.http.HttpServlet, an abstract class that implements the Servlet interface and is specially designed to handle HTTP requests.
+
+API is the acronym for Application Programming Interface, which is a software intermediary that allows two applications to talk to each other. Each time you use an app like Facebook, send an instant message, or check the weather on your phone, you're using an API. To simplify, an API delivers a user response to a system and sends the system's response back to a user. 
+Examples: Sharing flight information between airlines and travel sites. Using Google Maps in a rideshare app. Building chatbots in a messaging service. Embedding YouTube videos into a webpage.
+
+Virtual machines and hypervisors abstract away hardware and enable you to run operating systems. Containers (technically container engines) abstract away operating systems and enable you to run applications.
+
+SWAP memory is a temporary memory which is utilised by RAM from hard drive to do the things. It will be very slow but stops the system from crashing
+
+The . gitignore file tells Git which files to ignore when committing your project to the GitHub repository.
+
+Tomcat vs HTTPD
+Tomcat provides dynamic content to the user while httpd provides static content
+EX: Netbanking vs Blog
+Paths: tomcat/webapps vs war/www/httpd

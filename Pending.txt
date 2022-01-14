@@ -1,0 +1,64 @@
+AWS:
+On-premise vs cloud
+access key and secret key
+Accelerated Instance vs Compute Instance
+AWS Proton
+snowball
+AWS Migration Service
+security groups -> stateful or stateless?
+NACL -> stateful or stateless?
+
+https://priyadogra.com/aws-cloud-practitioner-essentials-quiz-answers/
+
+
+DevOps:
+Agile
+Traditional SDLC
+Waterfall Model
+Agile vs Traditional SDLC
+Operations Team(System Admins,VM Team,N/W Team,Security Team)
+Git vs GitHub
+CI/CD vs DevOps
+rebase and merge
+replica set vs controller
+kernel vs hypervisor
+kernel
+Hypervisor vs Docker
+nginx vs httpd
+docker detached mode
+what if the workstation goes down in K8S?
+Which module takes care of creating new instances if the worker nodes goes down?
+learn how we will send the logs to developer after the jenkins job ran
+
+
+Other:
+www
+constructor in java
+Rest API
+.msi vs .exe
+order of ugo
+rpm
+system.out vs system.err
+
+
+check for docker container installation launching new instance using custom AMI created after all the installations on first instance
+
+
+
+
+sudo yum -y install java-1.8* wget git unzip maven
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+sudo yum -y install epel-release
+sudo yum -y install jenkins
+sudo systemctl status jenkins
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+sudo yum -y install git unzip maven
+wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-6.7.7.zip
+unzip sonarqube-6.7.7.zip
+sonarqube-6.7.7/bin/linux-x86-64/sonar.sh status
+sonarqube-6.7.7/bin/linux-x86-64/sonar.sh start
+sonarqube-6.7.7/bin/linux-x86-64/sonar.sh status
+sudo netstat -ntpl | grep 9000

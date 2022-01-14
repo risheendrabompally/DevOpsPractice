@@ -1,0 +1,300 @@
+Terraform
+=========
+
+	> Cloud Provision
+
+	> Infrastrcuture As Code [ IaC ] 
+
+	> Compliments
+
+		> AWS - CloudFormation
+
+		> DevOps - Ansible
+
+	> Infrastructure as code is the process of managing and provisioning computer data centers through machine-readable definition files i.e Terraform Configuartion Files
+
+	> Earlier we used to create our data center components using
+
+		> AWS Management Console - GUI	
+
+		> AWS CLI - Use Interative Commands
+
+	> New approach, will be using CODE to setup data center components
+	
+	> CODE == REUSABILITY 
+
+		{ Replicate Infrastructure Easily }	
+
+	> Advantages
+	
+		> Speed Up Infrastructure Setup
+
+		> REUSABILITY
+
+		> Consistency
+
+		> Enabling Version Controlling
+
+		> Infrastructure is Auditable	
+
+
+> Terraform
+
+	> Terraform is an open-source infrastructure as code software tool created by HashiCorp. 
+
+	> Users define and provide data center infrastructure using HCL - HashiCorp Configuration Language
+
+		> AWS has it's own IaC - CloudFormation
+
+		> Azure has it's own IaC - Azure Resource Manager templates 
+
+		> Google has it's own IaC - Deployment Manager
+
+	> Terraform has "PROVIDERS" like AWS, Azure, GCP, Alibaba etc[ 500+ Providers ]	
+
+
+> Terraform Setup
+
+	> Download Terraform
+
+		> https://www.terraform.io/downloads.html
+
+	> Setup AWS Account Authentication & Authorization
+	
+	> IAM - AWS Identity and Access Management (IAM) enables you to manage access to AWS services and resources securely.	
+
+	> IAM User - An IAM user can represent a person or an application{TERRAFROM} that uses its credentials to make AWS requests
+
+		> terraform
+
+		> Create IAM User called "terraform" with Programmatic access and attach Administrator Policy
+
+			> Access Key - AKIA262XS5UWXJYK3IX2
+			> Secret Key - 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
+
+	> IAM Policy - An IAM policy is an object in AWS that, when associated with IAM User, defines their permissions
+
+		> Administrator Policy
+
+	> Now install AWS CLI Utility
+
+		https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
+
+	> Now using aws cli will setup a profile in local workstation to authenticate aws account
+
+		> aws configure --profile terrafrom
+
+		> https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html
+
+		> aws s3 ls --profile terrafrom	
+
+	> Now create a directory to store terrafrom config files
+		
+		> mkdir ibm
+
+		> you need to create main.tf file 
+
+			Update Provider info
+****
+
+NOT GOOD
+
+provider "aws" {
+  region     = "us-west-2"
+  access_key = "my-access-key"
+  secret_key = "my-secret-key"
+}	
+
+****
+
+****
+
+GOOD PRACTISE
+
+provider "aws" {
+  region     = "us-east-1"
+  profile    = "terraform"
+}
+
+****
+
+> You Define resource block, which contains
+
+	> resource type
+	> resource name
+	> resource arguments
+
+resource "aws_vpc" "example" {
+  cidr_block = "10.0.0.0/16"
+}
+
+> All the above will give a unique id for resources
+
+	> 	
+
+
+NOTE : https://www.terraform.io/docs/language/expressions/for.html
+
+
+DEEP DIVE
+
+# Instance
+resource "aws_instance" "my_instance" {
+  ami           = var.AWS_AMI[var.AWS_REGION]
+  instance_type = "t2.micro"
+
+  # Select Subnet Based On Condition
+  subnet_id = var.ENV == "prod" ? aws_subnet.vpc_prod_public_1.id : aws_subnet.vpc_dev_public_1.id
+
+  # Select Security Group
+  vpc_security_group_ids = [var.ENV == "prod" ? aws_security_group.allow_ssh_prod.id : aws_security_group.allow_ssh_dev.id]
+
+  # Select Key
+  key_name = aws_key_pair.my_mac_key.id
+
+
+  # Assign Private IP
+  private_ip = "10.0.1.40"
+
+  # Tag
+  tags = {
+    Name = "Server"
+  }
+
+}
+
+VARS
+variable "AWS_AMI" {
+  type = map(any)
+  default = {
+    "us-east-1" = "ami-0be2609ba883822ec"
+    "us-east-2" = "ami-0a0ad6b70e61be944"
+  }
+}
+variable "PATH_TO_PUB_KEY" {
+  type    = string
+  default = "mykey.pub"
+}
+variable "PATH_TO_PVT_KEY" {
+  type    = string
+  default = "mykey"
+}
+variable "ENV" {
+  default = "prod"
+}
+
+
+===== CODE =====
+
+
+# Configure the AWS Provider
+provider "aws" {
+  region     = "us-east-1"
+  profile    = "terraform"
+}
+
+# Provision VPC
+resource "aws_vpc" "ibm" {
+  cidr_block       = "10.0.0.0/16"
+  instance_tenancy = "default"
+
+  tags = {
+    Name = "IBM-VPC"
+  }
+}
+
+# Provision PUBLIC SUBNET
+resource "aws_subnet" "ibm-pub" {
+  vpc_id     = aws_vpc.ibm.id
+  cidr_block = "10.0.1.0/24"
+  map_public_ip_on_launch = "true"
+  availability_zone = "us-east-1a"
+
+  tags = {
+    Name = "IBM-PUB-SN"
+  }
+}
+
+# Provision PRIVATE SUBNET
+resource "aws_subnet" "ibm-pvt" {
+  vpc_id     = aws_vpc.ibm.id
+  cidr_block = "10.0.2.0/24"
+  map_public_ip_on_launch = "false"
+  availability_zone = "us-east-1b"
+
+  tags = {
+    Name = "IBM-PVT-SN"
+  }
+}
+
+# Provision IGW
+resource "aws_internet_gateway" "ibm-igw" {
+  vpc_id = aws_vpc.ibm.id
+
+  tags = {
+    Name = "IBM-IGW"
+  }
+}
+
+
+# Provision PUB RTB
+resource "aws_route_table" "ibm-pub-rtb" {
+  vpc_id = aws_vpc.ibm.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.ibm-igw.id
+  }
+
+  tags = {
+    Name = "IBM-PUB-RT"
+  }
+}
+
+# Provision PVT RTB
+resource "aws_route_table" "ibm-pvt-rtb" {
+  vpc_id = aws_vpc.ibm.id
+
+  tags = {
+    Name = "IBM-PVT-RT"
+  }
+}
+
+# Associate RTB WITH PUB SUBNETS
+resource "aws_route_table_association" "ibm-pub-assc" {
+  subnet_id      = aws_subnet.ibm-pub.id
+  route_table_id = aws_route_table.ibm-pub-rtb.id
+}
+
+# Associate RTB WITH PVT SUBNETS
+resource "aws_route_table_association" "ibm-pvt-assc" {
+  subnet_id      = aws_subnet.ibm-pvt.id
+  route_table_id = aws_route_table.ibm-pvt-rtb.id
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
